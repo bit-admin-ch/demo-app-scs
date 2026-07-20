@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: my-app-oauth-mock
+
+server:
+  servlet:
+    context-path: "/oauth-context-path"
+
+oauth-mock-data:
+  users:
+    - id: "user"
+      given-name: "Maxine"
+      family-name: "Muster"
+      locale: "DE"
+      preferred-username: "12345"
+      userroles: ["demo_@person_#read", "demo_@person_#write"]

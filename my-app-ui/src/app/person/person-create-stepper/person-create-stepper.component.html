@@ -1,0 +1,13 @@
+<qd-page [config]="qdPageConfig">
+  <qd-page-stepper>
+    <qd-page-step [config]="qdStepOneConfig" [stepControl]="personalInfos">
+      <qd-section [config]="qdSectionConfig">
+        <qd-grid [config]="qdGridConfig" [formGroup]="personalInfos" qdConnectFormStateToPage="personalInfos">
+          <qd-input [qdColumn]="2" [config]="firstNameConfig" formControlName="firstName"></qd-input>
+          <qd-input [qdColumn]="2" [config]="lastNameConfig" formControlName="lastName"></qd-input>
+        </qd-grid>
+      </qd-section>
+    </qd-page-step>
+  </qd-page-stepper>
+  <qd-page-footer></qd-page-footer>
+</qd-page>

@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: my-app
+  jpa:
+    open-in-view: false
+
+server:
+  port: 8080
+  servlet:
+    context-path: /${spring.application.name}
+  compression:
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: oauth-service-client-id
+    try-it-out-enabled: true
+
+jeap:
+  security:
+    oauth2:
+      resourceserver:
+        system-name: "demo"
+  swagger:
+    status: OPEN
+  web:
+    headers:
+      content-security-policy: "default-src 'self' localhost:* data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-src 'self' localhost:*;"
+    tls:
+      enabled: false
+
+frontend:
+  auth:
+    pamsAppId: "pams-app-id"
+    auto-login: true
+    silent-renew: true
+    system-name: ${jeap.security.oauth2.resourceserver.system-name}
+    renew-user-info-after-token-renew: true

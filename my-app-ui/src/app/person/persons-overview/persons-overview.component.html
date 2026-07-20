@@ -1,0 +1,5 @@
+<qd-page [config]="qdPageConfig">
+  <qd-section *ngIf="qdTableData" [config]="qdSectionConfig" (actionOutput)="addNewPerson()">
+    <qd-table [config]="qdTableConfig" [data]="qdTableData"> </qd-table>
+  </qd-section>
+</qd-page>

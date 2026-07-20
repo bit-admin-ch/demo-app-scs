@@ -1,0 +1,8 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>jeap-admin-ch/jeap-renovate-presets//presets/default-no-version-bump-automerge",
+    "github>jeap-admin-ch/jeap-renovate-presets//presets/ignore-npm",
+    "github>jeap-admin-ch/jeap-renovate-presets//presets/ignore-docker-compose"
+  ]
+}

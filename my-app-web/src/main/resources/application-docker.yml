@@ -1,0 +1,57 @@
+# Profile for running the application as a Docker container via docker/docker-compose.yml.
+# Hostnames refer to the docker compose service names. The OAuth issuer stays on
+# localhost:8081 because it must match the issuer claim in the tokens issued to the
+# browser; only the JWKS lookup uses the container-internal hostname.
+jeap:
+  security:
+    oauth2:
+      resourceserver:
+        authorization-server:
+          issuer: "http://localhost:8081/oauth-context-path"
+          jwk-set-uri: "http://oauth-mock:8081/oauth-context-path/.well-known/jwks.json"
+  swagger:
+    status: OPEN
+  monitor:
+    prometheus:
+      password: "{noop}secret"
+  s3:
+    client:
+      endpoint-url: 'localstack:4566'
+      access-key: 'unused'
+      secret-key: 'unused'
+      tls: false
+      region: eu-central-2
+
+#Store the client secret plain text for dev like environments
+springdoc:
+  swagger-ui:
+    oauth:
+      client-secret: secret
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: "jdbc:postgresql://postgres:5432/sample-db"
+    username: db-user
+    password: db-pass
+    hikari:
+      schema: data
+  flyway:
+    locations: classpath:db/migration
+    default-schema: data
+
+frontend:
+  auth:
+    authority: "http://localhost:8081/oauth-context-path"
+    applicationUrl: http://localhost:8080${server.servlet.context-path}
+    logoutRedirectUri: http://localhost:4199/
+    mockPams: true
+    pamsEnvironment: DEV
+    tokenAwarePatterns:
+      - "^${server.servlet.context-path}/api/.*" # build-prod
+      - "^${frontend.auth.applicationUrl}/api/.*" # build-dev
+      - "^${server.servlet.context-path}/ui-api/.*" # build-prod
+      - "^${frontend.auth.applicationUrl}/ui-api/.*" # build-dev
+    clientId: microService
+    redirect-url: http://localhost:8080${server.servlet.context-path}/redirect

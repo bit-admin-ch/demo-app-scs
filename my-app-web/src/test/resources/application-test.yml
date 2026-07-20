@@ -1,0 +1,28 @@
+frontend:
+  auth:
+    authority: dummy
+    applicationUrl: http://localhost:4200/
+    logoutRedirectUri: http://localhost:4199/
+    mockPams: true
+    pamsEnvironment: DEV
+    tokenAwarePatterns:
+      - "^http://localhost:8080${server.servlet.context-path}/api/.*"
+    clientId: my-app
+    auto-login: false
+    pams-app-id: someAppId
+    silent-renew: false
+    system-name: demo
+    renew-user-info-after-token-renew: false
+    redirect-url: http://localhost:4200/
+
+
+management:
+  health:
+    defaults:
+      enabled: false
+
+logging:
+  level:
+    org.apache.kafka.clients.NetworkClient: ERROR
+    org.apache.kafka.clients.admin.internals.AdminMetadataManager: ERROR
+    org.apache.kafka.clients.Metadata: ERROR

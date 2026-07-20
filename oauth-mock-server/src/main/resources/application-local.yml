@@ -1,0 +1,54 @@
+server:
+  port: 8081
+
+mockserver:
+  base-url: "http://localhost:${server.port}${server.servlet.context-path}"
+
+oauth-mock-data:
+  clients:
+
+    # Client used by the Angular frontend of the demo application
+    # (see frontend.auth.clientId in my-app-web/src/main/resources/application-local.yml)
+    - client-id: "microService"
+      client-secret: "{noop}secret"
+      registered-redirect-uri: [
+        "http://localhost:4200/",
+        "http://localhost:4200/assets/auth/silent-renew.html",
+        "http://localhost:8080/my-app/redirect",
+        "http://localhost:8080/my-app/assets/auth/silent-renew.html"
+      ]
+
+      # Note: Roles for a specific business partner can be mocked like this:
+      # bproles:
+      #     "12345": [ "demo_@document_#read", "demo_@document_#write" ]
+      userroles:
+        - "demo_@person_#read"
+        - "demo_@person_#write"
+        - "demo_@object_#read"
+        - "demo_@object_#write"
+        - "demo_@message_#send"
+        - "demo_@message_#read"
+
+    # Client used by the Swagger UI of the demo application
+    # (see springdoc.swagger-ui.oauth.client-id in my-app-web/src/main/resources/application.yml)
+    - client-id: "oauth-service-client-id"
+      client-secret: "{noop}secret"
+      registered-redirect-uri: [
+        "http://localhost:8080/my-app/swagger-ui/oauth2-redirect.html"
+      ]
+      userroles:
+        - "demo_@person_#read"
+        - "demo_@person_#write"
+        - "demo_@object_#read"
+        - "demo_@object_#write"
+        - "demo_@message_#send"
+        - "demo_@message_#read"
+
+jeap:
+  monitor:
+    prometheus:
+      user: "prometheus"
+      password: "{noop}secret"
+  web:
+    tls:
+      enabled: false

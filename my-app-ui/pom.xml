@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>ch.demo</groupId>
+    <artifactId>my-app</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>my-app-ui</artifactId>
+  <name>my-app-ui</name>
+  <packaging>jar</packaging>
+
+  <properties>
+    <sonar.sources>src/app</sonar.sources>
+    <sonar.tests>src/app</sonar.tests>
+    <sonar.exclusions>**/*.spec.ts,**/test/**</sonar.exclusions>
+    <sonar.test.inclusions>**/*.spec.ts</sonar.test.inclusions>
+    <sonar.typescript.lcov.reportPaths>coverage/sonarQube/lcov.info</sonar.typescript.lcov.reportPaths>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>frontend-build</directory>
+      </resource>
+    </resources>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.6.3</version>
+        </plugin>
+        <!-- frontend-build must survive "mvn clean": the ng-build profile activation
+             (frontend-build/static/ missing) is evaluated before the clean phase runs,
+             so deleting it during clean would package an empty UI jar in the same build.
+             To force a UI rebuild, delete the frontend-build directory manually (see README). -->
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>npm-install</id>
+      <activation>
+        <file>
+          <missing>node_modules</missing> <!-- Execute if node_modules/ is not present -->
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>npm</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>npm</executable>
+                  <arguments>
+                    <argument>ci</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>ng-build</id>
+      <activation>
+        <file>
+          <missing>frontend-build/static/</missing> <!-- Execute if the output of ng build is not present -->
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+
+              <execution>
+                <id>npm-run-tests</id>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <phase>generate-resources</phase>
+                <configuration>
+                  <executable>npm</executable>
+                  <arguments>
+                    <argument>run</argument>
+                    <argument>test:ci</argument>
+                  </arguments>
+                  <!--suppress UnresolvedMavenProperty -->
+                  <skip>${skipTests}</skip>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>build-prod</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>npm</executable>
+                  <arguments>
+                    <argument>run</argument>
+                    <argument>build-prod</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>
